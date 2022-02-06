@@ -36,5 +36,7 @@
     <string name="today">اليوم</string>
     <string name="tomorrow">غداً</string>
     <string name="failed_accesslocation">يتعذر الوصول الى الموقع! تاكد من تفعيل GPS</string>
+    <string name="signout">هل تريد تسجيل الخروج</string>
+    <string name="choose_trip_location">اختر موقع البدايه و النهايه من فضلك</string>
 </resources>
 

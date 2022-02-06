@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.barmej.blueseacaptain.callback.AddNewTrip;
 import com.barmej.blueseacaptain.callback.CallBack;
+import com.barmej.blueseacaptain.callback.TripUpdates;
 import com.barmej.blueseacaptain.data.SharedPreferencesHelper;
 import com.barmej.blueseacaptain.domain.entity.Captain;
 import com.barmej.blueseacaptain.domain.entity.Trip;
@@ -34,6 +35,7 @@ public class TripManager {
     private DatabaseReference databaseReference;
     private Trip trip;
     private Captain captain;
+    private ValueEventListener valueEventListener;
 
     private TripManager() {
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -95,7 +97,7 @@ public class TripManager {
         });
     }
 
-    public void addTrip(Context context, String fromCountry, String toCountry, String availableSeats, String date, CallBack callBack) {
+    public void addTrip(Context context, String fromCountry, String toCountry, String availableSeats, String date, double pickUpLat, double pickUpLng, double destinationLat, double destinationLng, CallBack callBack) {
         String captainId = SharedPreferencesHelper.getCaptainId(context);
         String id = UUID.randomUUID().toString();
 
@@ -107,6 +109,11 @@ public class TripManager {
         trip.setAvailableSeats(Integer.parseInt(availableSeats));
         trip.setDate(date);
         trip.setStatus(Trip.Status.AVAILABLE.name());
+        trip.setPickUpLat(pickUpLat);
+        trip.setPickUpLng(pickUpLng);
+        trip.setDestinationLat(destinationLat);
+        trip.setDestinationLng(destinationLng);
+
 
         captain = new Captain();
         captain.setId(captainId);
@@ -138,5 +145,26 @@ public class TripManager {
         firebaseDatabase.getReference(CAPTAIN_REF_PATH).child(trip.getCaptainId()).child("status").setValue(Captain.Status.ARRIVED.name());
     }
 
+    public void listenToTripUpdates(Trip trip, TripUpdates tripUpdates) {
+        valueEventListener = firebaseDatabase.getReference(TRIP_REF_PATH).child(trip.getId()).
+                addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        tripUpdates.tripUpdate(snapshot.getValue(Trip.class));
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+
+    public void stopListeningToTripUpdates(String id) {
+        if (valueEventListener != null) {
+            firebaseDatabase.getReference(TRIP_REF_PATH).child(id).removeEventListener(valueEventListener);
+            valueEventListener = null;
+        }
+    }
 }

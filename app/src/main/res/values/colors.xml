@@ -4,7 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#5cb19f</color>
 
+    <color name="backup_restore_background">#B9FFFFFF</color>
     <color name="colorBackground">#fafafa</color>
     <color name="colorBackgroundDark">#f8f8f8</color>
     <color name="gray">#A9B7C6</color>
+    <color name="orange">#FFB300</color>
+
 </resources>

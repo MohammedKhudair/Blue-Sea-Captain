@@ -3,6 +3,8 @@ package com.barmej.blueseacaptain.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -23,6 +25,9 @@ public class LogInActivity extends AppCompatActivity {
 
     ActivityLogInBinding binding;
 
+    public static Intent getStartIntent(Context context) {
+        return new Intent(context, LogInActivity.class);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -11,14 +11,48 @@ public class Trip implements Serializable {
     private String status;
     private String captainId;
 
-
-
     private int availableSeats;
     private int reservedSeats;
     private double currentLat;
     private double currentLng;
 
+    private double pickUpLat;
+    private double pickUpLng;
+    private double destinationLat;
+    private double destinationLng;
+
     public Trip() {
+    }
+    public double getPickUpLat() {
+        return pickUpLat;
+    }
+
+    public void setPickUpLat(double pickUpLat) {
+        this.pickUpLat = pickUpLat;
+    }
+
+    public double getPickUpLng() {
+        return pickUpLng;
+    }
+
+    public void setPickUpLng(double pickUpLng) {
+        this.pickUpLng = pickUpLng;
+    }
+
+    public double getDestinationLat() {
+        return destinationLat;
+    }
+
+    public void setDestinationLat(double destinationLat) {
+        this.destinationLat = destinationLat;
+    }
+
+    public double getDestinationLng() {
+        return destinationLng;
+    }
+
+    public void setDestinationLng(double destinationLng) {
+        this.destinationLng = destinationLng;
     }
 
     public String getCaptainId() {

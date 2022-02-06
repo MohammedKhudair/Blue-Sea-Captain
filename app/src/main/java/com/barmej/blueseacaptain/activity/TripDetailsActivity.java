@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.barmej.blueseacaptain.R;
+import com.barmej.blueseacaptain.callback.TripUpdates;
 import com.barmej.blueseacaptain.databinding.ActivityTripDetailsBinding;
 import com.barmej.blueseacaptain.domain.TripManager;
 import com.barmej.blueseacaptain.domain.entity.Trip;
@@ -28,8 +29,11 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +49,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback locationCallback;
     private LocationRequest mLocationRequest;
-    private  CameraUpdate cameraUpdateFactory;
+    private Marker marker;
 
     Trip trip;
     private GoogleMap mGoogleMap;
@@ -76,7 +80,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
                     @Override
                     public void onSuccess(@NonNull Location location) {
                         if (location == null) {
-                            Snackbar.make(binding.getRoot(),R.string.failed_accesslocation,Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(binding.getRoot(), R.string.failed_accesslocation, Snackbar.LENGTH_LONG).show();
                         } else {
                             startLocationUpdates();
                         }
@@ -111,6 +115,11 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
 
                     if (trip.getStatus().equals(Trip.Status.ON_TRIP.name())) {
                         startLocationUpdates();
+
+                    } else if (trip.getStatus().equals(Trip.Status.ARRIVED.name())) {
+                        binding.startTripButton.setEnabled(false);
+                        binding.startTripButton.setText("انتهت الرحلة");
+
                     }
                 }
 
@@ -121,6 +130,16 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
             });
         }
 
+        // الاستماع الي تحديثات الرحله
+        listenToTripUpdates();
+    }
+
+    // الاستماع الي تحديثات الرحله و تحديث المقاعد المتاحه و المحجوزه
+    private void listenToTripUpdates() {
+        TripManager.getInstance().listenToTripUpdates(trip, trip -> {
+            binding.availableSeatsTextView.setText(String.valueOf(trip.getAvailableSeats()));
+            binding.reservedSeatsTextView.setText(String.valueOf(trip.getReservedSeats()));
+        });
     }
 
     // تحديث الرحله وايقاف المستمع
@@ -129,16 +148,20 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         TripManager.getInstance().updateTripToArrived(trip);
         binding.startTripButton.setVisibility(View.VISIBLE);
         binding.arrivedTripButton.setVisibility(View.INVISIBLE);
+        binding.startTripButton.setEnabled(false);
+        binding.startTripButton.setText("انتهت الرحلة");
     }
 
     //ارسال تحديثات الموقع
     protected void startLocationUpdates() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        setMyLocationEnabled(false);
+        setMarkersLocation();
 
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(10 * 1000);
+        mLocationRequest.setInterval(5 * 1000);
         mLocationRequest.setFastestInterval(2000);
 
         locationCallback = new LocationCallback() {
@@ -163,12 +186,37 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         binding.startTripButton.setVisibility(View.INVISIBLE);
         binding.arrivedTripButton.setVisibility(View.VISIBLE);
 
-        if (cameraUpdateFactory == null) {
-            cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-            mGoogleMap.moveCamera(cameraUpdateFactory);
+        if (marker == null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+            BitmapDescriptor descriptor = BitmapDescriptorFactory.fromResource(R.drawable.sailingboat3);
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.icon(descriptor);
+            markerOptions.title("Boat location");
+            marker = mGoogleMap.addMarker(markerOptions);
+        } else {
+            marker.setPosition(latLng);
         }
 
         TripManager.getInstance().updateCurrentLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), trip);
+    }
+
+    //وضع موقع علامة البدايه والنهايه
+    private void setMarkersLocation() {
+        LatLng pickUpLatLng = new LatLng(trip.getPickUpLat(), trip.getPickUpLng());
+        LatLng destinationLatLng = new LatLng(trip.getDestinationLat(), trip.getDestinationLng());
+
+        BitmapDescriptor descriptor1 = BitmapDescriptorFactory.fromResource(R.drawable.pickup);
+        MarkerOptions markerOptions1 = new MarkerOptions();
+        markerOptions1.position(pickUpLatLng);
+        markerOptions1.icon(descriptor1);
+        mGoogleMap.addMarker(markerOptions1);
+
+        BitmapDescriptor descriptor2 = BitmapDescriptorFactory.fromResource(R.drawable.destination);
+        MarkerOptions markerOptions2 = new MarkerOptions();
+        markerOptions2.position(destinationLatLng);
+        markerOptions2.icon(descriptor2);
+        mGoogleMap.addMarker(markerOptions2);
     }
 
     //======================================================================
@@ -204,7 +252,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
                 if (location != null) {
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
-                    setMyLocationEnabled();
+                    setMyLocationEnabled(true);
                 } else {
                     Toast.makeText(TripDetailsActivity.this, R.string.find_location_needed, Toast.LENGTH_SHORT).show();
                 }
@@ -218,13 +266,13 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         mGoogleMap = googleMap;
         requestLocationPermission();
         requestDeviceCurrentLocation();
-        setMyLocationEnabled();
+        setMyLocationEnabled(true);
     }
 
-    private void setMyLocationEnabled() {
+    private void setMyLocationEnabled(boolean enabled) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            mGoogleMap.setMyLocationEnabled(true);
+            mGoogleMap.setMyLocationEnabled(enabled);
         }
     }
 
@@ -257,6 +305,7 @@ public class TripDetailsActivity extends AppCompatActivity implements OnMapReady
         super.onStop();
         binding.tripMapView.onStop();
         stopLocationUpdates();
+        TripManager.getInstance().stopListeningToTripUpdates(trip.getId());
     }
 
     @Override

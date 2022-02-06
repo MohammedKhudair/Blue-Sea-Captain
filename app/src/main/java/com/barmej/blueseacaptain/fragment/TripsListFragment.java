@@ -46,9 +46,9 @@ public class TripsListFragment extends Fragment implements TripAdapter.OnTripIte
         binding.addTripButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // ابدأ نشاطًا باستخدام الرسوم المتحركة
-                startActivity(new Intent(getActivity(), AddTripActivity.class),
-                        ActivityOptions.makeSceneTransitionAnimation(getActivity()).toBundle());
+                startActivity(new Intent(getActivity(), AddTripActivity.class));
+                getActivity().onBackPressed();
+
             }
         });
 
