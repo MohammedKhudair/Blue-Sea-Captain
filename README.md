@@ -1,48 +1,49 @@
-# <div dir="rtl">نبذة عن المشروع</div>
-<div dir="rtl">
-شركة البحر الأزرق تقوم بالعديد من الرحلات السياحية يوميا بين عدة مدن فى العالم عن طريق البواخر.
+# Blue Sea Captain
 
-قررت الشركة أن تتيح لعملائها حجز ومتابعة الرحلات عن طريق الهاتف ونريد ان نقوم بتطوير هذا المشروع لنساعدهم.
+## Project Overview
 
-تم الاتفاق على تنفيذ المشروع على عدة مراحل.
-</div>
+Blue Sea Captain is a multi-phase mobile application developed to modernize and streamline cruise booking and management for Blue Sea Company, which operates daily voyages between major cities worldwide. This project demonstrates my skills in app architecture, user authentication, real-time data management, and geolocation services, leveraging Firebase and Google APIs to deliver an intuitive user experience.
 
-# <div dir="rtl">الهدف من هذا المشروع ؟</div> 
-<div dir="rtl">في الدروس السابقة تعرفنا على المفاهيم المتعلقة بتعدد التطبيقات واستخدام خادم لتبادل البيانات بين التطبيقات، وتعرفنا كذلك على خدمات Firebase. في هذا المشروع سنقوم بتطبيق ما تعلمناه لتطوير تطبيق للرحلات باستخدام Firebase.
-</div>
+## Project Objectives
 
-# <div dir="rtl">متطلبات المشروع</div>
-<div dir="rtl">
+Building upon advanced concepts in multi-application integration and backend connectivity, this project applies lessons learned about cross-app communication and cloud backend services (Firebase) to solve real-world problems in the tourism and travel sector. The goal is to empower both customers and company administrators with seamless tools for voyage scheduling, management, and tracking.
 
-<h3>المرحلة الأولى:</h3>
-<ul>
-<li>إمكانية تسجيل الدخول باستخدام ايميل وكلمة مرور. يتم إنشاء البيانات مباشرة بواسطة المدير فى لوحة التحكم، فى حالتنا firebase.</li>
-<li>إمكانية إضافة رحلة جديدة وبياناتها تتضمن تاريخ الرحلة، اسم الميناء الذي تبدأ منه الرحلة، اسم الميناء الذي ستصل إليه الرحلة.</li>
-<li>عرض قائمة بالرحلات القادمة.</li>
-<li>اختيار الرحلة وعرض بياناتها.</li>
-</ul>
-<br/>
-المرحلة الاولى مفيدة فقط لمشاركة معلومات الرحلات المتاحة ولكن لا يمكن حجز الرحلات.
+## Project Requirements and Implementation
 
-<br/>
-<br/>
-<h3>المرحلة الثانية:</h3>
-<ul>
-<li>عند إدخال بيانات الرحلة يجب اضافة عدد الركاب المتاحين.</li>
-<li>عند عرض بيانات الرحلة اظهار عدد الركاب المتاحين وعدد الركاب الذين قاموا بالحجز.</li>
-</ul>
+### Phase 1: Core Functionality
+- **User Authentication:** Secure email/password login, with user data managed by administrators via Firebase.
+- **Voyage Management:** Ability to create new voyages, including journey date, departure port, and arrival port.
+- **Upcoming Voyages List:** View all upcoming cruises with relevant details.
+- **Voyage Details:** Select and display full information for each voyage.
 
-<br/>
-<h3>المرحلة الثالثة: </h3><ul>
-<li>فى شاشة عرض بيانات الرحلة يمكن بدء الرحلة.</li>
-<li>تحديث بيانات الرحلة بموقع الباخرة الحالي على الخريطة.</li>
-<li>فى شاشة عرض بيانات الرحلة يمكن إنهاء الرحلة الجارية.</li>
-</ul>
+> _Note: This phase focuses on sharing voyage information only—booking is not yet enabled._
 
-<br/>
-<h3>المرحلة الرابعة (نقاط إضافية):</h3>
-<ul>
-<li>إدخال بيانات الميناء بالبحث عن اسمه باستخدام <a href="https://developers.google.com/places/android-sdk/intro">Google places apis</a> وحفظ موقع الميناء من النتيجة.</li>
-<li>إدخال بيانات الطريق عن طريق تحديد نقاط على الخريطة تمثل الرحلة.</li>
-</ul>
-</div>
+### Phase 2: Booking Management
+- **Passenger Capacity:** Add and display available passenger capacity for each voyage.
+- **Booking Tracking:** Show number of available and booked seats for each cruise.
+
+### Phase 3: Real-Time Voyage Operations
+- **Start Voyage:** Initiate a cruise from the voyage details screen.
+- **Live Location Tracking:** Update and display the ship’s current location on a map during an active voyage.
+- **End Voyage:** Mark the completion of a voyage from the details screen.
+
+### Phase 4: Advanced Features (Bonus)
+- **Port Data Integration:** Search for ports by name using [Google Places API](https://developers.google.com/places/android-sdk/intro) and save their location data.
+- **Route Mapping:** Allow users to define voyage routes by selecting points on the map.
+
+---
+
+## Technologies & Skills Demonstrated
+
+- **Firebase:** Authentication, real-time database, and admin panel integration.
+- **Google Maps & Places APIs:** Advanced geolocation, place search, and route mapping.
+- **Mobile App Development:** Modular architecture, intuitive UI/UX, and multi-phase feature rollout.
+- **Cloud Data Management:** Secure user data handling and voyage scheduling.
+
+---
+
+## About Me
+
+This project highlights my ability to design, build, and iterate complex mobile solutions for real-world businesses, integrating cloud services and third-party APIs to deliver robust and user-centric products.
+
+---
